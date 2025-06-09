@@ -1,0 +1,139 @@
+table fact_bookings
+	lineageTag: a460a9db-7c86-4530-ad5c-b271969bea0d
+
+	column booking_id
+		dataType: string
+		lineageTag: 5654fe3e-0705-46dc-9674-309c49a4945f
+		summarizeBy: none
+		sourceColumn: booking_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column property_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 5ca16e61-6a2b-4334-81a2-4fb6bb25babd
+		summarizeBy: none
+		sourceColumn: property_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column booking_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 52d0084b-dad3-40ca-b54b-9aad9081a22d
+		summarizeBy: none
+		sourceColumn: booking_date
+
+		variation Variation
+			isDefault
+			relationship: c9a61ee6-452e-4e80-bb82-24b6c3e138f3
+			defaultHierarchy: LocalDateTable_6b0ace5a-b12f-45ee-a1b0-e1df603a2555.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column check_in_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 475b02d7-7960-49c1-9ba6-cf5fe2ac578e
+		summarizeBy: none
+		sourceColumn: check_in_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column checkout_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e8992803-7a0b-4c4e-a70c-25d32438463c
+		summarizeBy: none
+		sourceColumn: checkout_date
+
+		variation Variation
+			isDefault
+			relationship: 55f6247a-8c47-4e21-9298-fd0b5ec580d6
+			defaultHierarchy: LocalDateTable_0655fd6b-ffb7-4d3e-8761-400119b0638f.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column no_guests
+		dataType: int64
+		formatString: 0
+		lineageTag: 6fc8dbfc-648b-46c0-b395-993c6000b743
+		summarizeBy: sum
+		sourceColumn: no_guests
+
+		annotation SummarizationSetBy = Automatic
+
+	column room_category
+		dataType: string
+		lineageTag: 326eaab0-665d-498a-815f-4400ebf12664
+		summarizeBy: none
+		sourceColumn: room_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column booking_platform
+		dataType: string
+		lineageTag: 61b9244e-7164-402f-b780-f5dcaaa0a21e
+		summarizeBy: none
+		sourceColumn: booking_platform
+
+		annotation SummarizationSetBy = Automatic
+
+	column ratings_given
+		dataType: int64
+		formatString: 0
+		lineageTag: 91b3f821-f3b4-46f9-8a2e-b2d3e5d3bfb0
+		summarizeBy: sum
+		sourceColumn: ratings_given
+
+		annotation SummarizationSetBy = Automatic
+
+	column booking_status
+		dataType: string
+		lineageTag: cbd8f5bf-9398-468e-a07c-731553476144
+		summarizeBy: none
+		sourceColumn: booking_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column revenue_generated
+		dataType: int64
+		formatString: 0
+		lineageTag: 06ac17cc-ec9b-4f93-82d1-6106ad0fdee4
+		summarizeBy: sum
+		sourceColumn: revenue_generated
+
+		annotation SummarizationSetBy = Automatic
+
+	column revenue_realized
+		dataType: int64
+		formatString: 0
+		lineageTag: 66aece70-5369-42a8-a398-9ee50fb124c5
+		summarizeBy: sum
+		sourceColumn: revenue_realized
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_bookings = m
+		mode: import
+		source =
+				let
+				    Source = Folder.Files("C:\Users\Jimmy\Desktop\Hospitality"),
+				    #"C:\Users\Jimmy\Desktop\Hospitality\_fact_bookings csv" = Source{[#"Folder Path"="C:\Users\Jimmy\Desktop\Hospitality\",Name="fact_bookings.csv"]}[Content],
+				    #"Imported CSV" = Csv.Document(#"C:\Users\Jimmy\Desktop\Hospitality\_fact_bookings csv",[Delimiter=",", Columns=12, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"booking_id", type text}, {"property_id", Int64.Type}, {"booking_date", type date}, {"check_in_date", type date}, {"checkout_date", type date}, {"no_guests", Int64.Type}, {"room_category", type text}, {"booking_platform", type text}, {"ratings_given", Int64.Type}, {"booking_status", type text}, {"revenue_generated", Int64.Type}, {"revenue_realized", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

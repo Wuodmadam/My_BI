@@ -1,0 +1,134 @@
+table key_measures
+	lineageTag: a42eee40-2bfa-4b37-810f-30fe5643e52d
+
+	measure Revenue = SUM(fact_bookings[revenue_realized])
+		formatString: 0
+		lineageTag: 342ac04b-a98a-4d58-bf90-6182c82513dc
+
+	measure 'Total Bookings' = COUNT(fact_bookings[booking_id])
+		formatString: 0
+		lineageTag: 1f915552-c4c9-42d3-a4f7-6e51088fb4b0
+
+	measure 'Total Capacity' = SUM(fact_aggregated_bookings[capacity])
+		formatString: 0
+		lineageTag: 465b9856-17d4-4a03-9583-90ff532a41e9
+
+	measure 'Total Successful Bookings' = SUM(fact_aggregated_bookings[successful_bookings])
+		formatString: 0
+		lineageTag: 79727ebd-f76a-488f-befb-df3145ab079e
+
+	measure 'Occupancy %' = DIVIDE([Total Successful Bookings],[Total Capacity],0)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: fdc2bc84-f9c0-4f61-b56f-8916c53a5c2b
+
+	measure 'Average Rating' = AVERAGE(fact_bookings[ratings_given])
+		lineageTag: 928fd72d-d0ff-45e6-b8ec-51972009b374
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'No of days' = DATEDIFF(MIN(dim_date[date]),MAX(dim_date[date]),DAY) +1
+		formatString: 0
+		lineageTag: 7dd43d90-db23-4ca6-a755-8cc082f2b6e4
+
+	measure 'Total cancelled bookings' = CALCULATE([Total Bookings],fact_bookings[booking_status]="Cancelled")
+		formatString: 0
+		lineageTag: fd701681-191c-47ee-9e58-43932819e35e
+
+	measure 'Cancellation %' = DIVIDE([Total cancelled bookings],[Total Bookings])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: d417847a-4815-494d-942a-80a801b1cbfa
+
+	measure 'Total Checked Out' = CALCULATE([Total Bookings],fact_bookings[booking_status]="Checked Out")
+		formatString: 0
+		lineageTag: 5e37f531-7472-4246-96cb-2c274ab85b61
+
+	measure 'Total no show bookings' = CALCULATE([Total Bookings],fact_bookings[booking_status]="No Show")
+		formatString: 0
+		lineageTag: e73edba5-0409-40af-a76a-fc2ac0ba45e2
+
+	measure 'No Show rate %' = DIVIDE([Total no show bookings],[Total Bookings])
+		lineageTag: 0349753d-ea39-4e00-a7bc-c9158d7717eb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Booking % by Platform' = DIVIDE([Total Bookings], CALCULATE([Total Bookings], ALL(fact_bookings[booking_platform])))*100
+		lineageTag: bdc82022-11e1-4913-890f-884eda11f4c2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Booking % by Room class' = DIVIDE([Total Bookings], CALCULATE([Total Bookings], ALL(dim_rooms[room_class])))*100
+		lineageTag: 272e4347-ffd4-442b-ac52-d4fdbae02ebd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure ADR = DIVIDE([Revenue], [Total Bookings],0)
+		lineageTag: d60b0fff-0e68-4013-ab19-b3e3e61e896b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Realisation %' = 1- ([Cancellation %]+[No Show rate %])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 3b754faf-becc-4cec-860d-6a3598b6d2a7
+
+	measure RevPAR = DIVIDE([Revenue],[Total Capacity])
+		lineageTag: aff9ea9e-8106-4f13-8d42-ac636a78b549
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure DBRN = DIVIDE([Total Bookings], [No of days])
+		lineageTag: e7b1469b-4038-4110-92e0-9b7f096377ae
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure DSRN = DIVIDE([Total Capacity], [No of days])
+		lineageTag: cbb82cc2-1e2a-46c7-9f2f-e72cf16ea841
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure DURN = DIVIDE([Total Checked Out],[No of days])
+		lineageTag: 29d05efb-cc75-43a6-902d-28c0c9d64f22
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue WoW change %' = Var selv = IF(HASONEFILTER(dim_date[wn]),SELECTEDVALUE(dim_date[wn]),MAX(dim_date[wn])) var revcw = CALCULATE([Revenue],dim_date[wn]= selv) var revpw = CALCULATE([Revenue],FILTER(ALL(dim_date),dim_date[wn]= selv-1)) return DIVIDE(revcw,revpw,0)-1
+		lineageTag: 2bfb602f-2cb2-45d4-bde5-cc94fa93bab0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Occupancy WoW change %' = Var selv = IF(HASONEFILTER(dim_date[wn]),SELECTEDVALUE(dim_date[wn]),MAX(dim_date[wn])) var revcw = CALCULATE([Occupancy %],dim_date[wn]= selv) var revpw = CALCULATE([Occupancy %],FILTER(ALL(dim_date),dim_date[wn]= selv-1)) return DIVIDE(revcw,revpw,0)-1
+		lineageTag: 9700bdcb-e25e-46a2-baf1-c1f867ba272d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'ADR WoW change %' = Var selv = IF(HASONEFILTER(dim_date[wn]),SELECTEDVALUE(dim_date[wn]),MAX(dim_date[wn])) var revcw = CALCULATE([ADR],dim_date[wn]= selv) var revpw = CALCULATE([ADR],FILTER(ALL(dim_date),dim_date[wn]= selv-1)) return DIVIDE(revcw,revpw,0)-1
+		lineageTag: b86649a2-48f4-45ca-81cd-ea94369b5dbe
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revpar WoW change %' = Var selv = IF(HASONEFILTER(dim_date[wn]),SELECTEDVALUE(dim_date[wn]),MAX(dim_date[wn])) var revcw = CALCULATE([RevPAR],dim_date[wn]= selv) var revpw = CALCULATE([RevPAR],FILTER(ALL(dim_date),dim_date[wn]= selv-1)) return DIVIDE(revcw,revpw,0)-1
+		lineageTag: 97fb3962-b604-4aa3-bbdc-fd6952ea121c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Realisation WoW change %' = Var selv = IF(HASONEFILTER(dim_date[wn]),SELECTEDVALUE(dim_date[wn]),MAX(dim_date[wn])) var revcw = CALCULATE([Realisation %],dim_date[wn]= selv) var revpw = CALCULATE([Realisation %],FILTER(ALL(dim_date),dim_date[wn]= selv-1)) return DIVIDE(revcw,revpw,0)-1
+		lineageTag: d70b1a99-efde-430d-ac8f-282aaba72406
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'DSRN WoW change %' = Var selv = IF(HASONEFILTER(dim_date[wn]),SELECTEDVALUE(dim_date[wn]),MAX(dim_date[wn])) var revcw = CALCULATE([DSRN],dim_date[wn]= selv) var revpw = CALCULATE([DSRN],FILTER(ALL(dim_date),dim_date[wn]= selv-1)) return DIVIDE(revcw,revpw,0)-1
+		lineageTag: a0bad71d-bed9-4cfc-a643-c2488719c0ac
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition key_measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

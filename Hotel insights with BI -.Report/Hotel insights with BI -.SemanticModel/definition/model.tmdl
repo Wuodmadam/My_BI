@@ -1,0 +1,30 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-KE
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBIDesktopVersion = 2.143.1378.0 (25.05)+4e1de9c957866bc5336e0d250838314aa54ff3a8
+
+annotation PBI_QueryOrder = ["dim_date","dim_hotels","dim_rooms","fact_aggregated_bookings","fact_bookings","key_measures"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table dim_date
+ref table DateTableTemplate_0a70af52-dbbe-423c-9469-091d3cb3d6cd
+ref table LocalDateTable_0b13eedb-593a-471a-8682-4bd42d5d0416
+ref table LocalDateTable_7658a513-b92a-4aef-8e50-4688507f74ee
+ref table dim_hotels
+ref table dim_rooms
+ref table fact_aggregated_bookings
+ref table fact_bookings
+ref table LocalDateTable_6b0ace5a-b12f-45ee-a1b0-e1df603a2555
+ref table LocalDateTable_0655fd6b-ffb7-4d3e-8761-400119b0638f
+ref table key_measures
+
+ref cultureInfo en-US
+

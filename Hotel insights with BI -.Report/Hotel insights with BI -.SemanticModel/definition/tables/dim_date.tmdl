@@ -1,0 +1,90 @@
+table dim_date
+	lineageTag: 2142e645-db36-49ac-8e1d-6009206d1eae
+
+	column date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 23fa9a54-9619-4a32-b22b-e19b919dab55
+		summarizeBy: none
+		sourceColumn: date
+
+		variation Variation
+			isDefault
+			relationship: 614b4e46-90e8-4f25-a79f-a2ae2c93eb99
+			defaultHierarchy: LocalDateTable_0b13eedb-593a-471a-8682-4bd42d5d0416.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'mmm yy'
+		dataType: dateTime
+		formatString: Mmm yy
+		lineageTag: 1f67095a-04df-43b9-83e4-d8324b61def9
+		summarizeBy: none
+		sourceColumn: mmm yy
+
+		variation Variation
+			isDefault
+			relationship: fdec7e6a-d19d-46e4-9521-737bc55fd6d7
+			defaultHierarchy: LocalDateTable_7658a513-b92a-4aef-8e50-4688507f74ee.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column 'week no'
+		dataType: string
+		lineageTag: 0122426d-8a96-4593-bf8e-c776e099d590
+		summarizeBy: none
+		sourceColumn: week no
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column wn = ```
+			WEEKNUM(dim_date[date]) 
+			```
+		formatString: 0
+		lineageTag: 86a73a8f-1c13-4729-83c0-044ba4ad7803
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column which_day =
+			
+			
+			var wkd = WEEKDAY(dim_date[date])
+			
+			return if(wkd>5, "Weekend", "Weekday")
+		lineageTag: f7e6ab0f-075b-49fe-85b3-ba509ce30bcd
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_date = m
+		mode: import
+		source =
+				let
+				    Source = Folder.Files("C:\Users\Jimmy\Desktop\Hospitality"),
+				    #"C:\Users\Jimmy\Desktop\Hospitality\_dim_date csv" = Source{[#"Folder Path"="C:\Users\Jimmy\Desktop\Hospitality\",Name="dim_date.csv"]}[Content],
+				    #"Imported CSV" = Csv.Document(#"C:\Users\Jimmy\Desktop\Hospitality\_dim_date csv",[Delimiter=",", Columns=4, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"date", type date}, {"mmm yy", type date}, {"week no", type text}, {"day_type", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"day_type"})
+				in
+				    #"Removed Columns"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

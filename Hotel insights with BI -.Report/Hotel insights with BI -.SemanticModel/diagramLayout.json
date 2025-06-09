@@ -1,0 +1,100 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 124.04292368805667,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 22.122514781725613,
+            "y": 412.93236438260976
+          },
+          "nodeIndex": "dim_date",
+          "nodeLineageTag": "2142e645-db36-49ac-8e1d-6009206d1eae",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 59.526047519658846,
+            "y": 7.3475969065266895
+          },
+          "nodeIndex": "dim_hotels",
+          "nodeLineageTag": "659c1d78-60d5-4e4e-a6d4-9b4f77c85325",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 873.16163188708913,
+            "y": 236.44908856819978
+          },
+          "nodeIndex": "dim_rooms",
+          "nodeLineageTag": "9dd2597b-1346-4c5b-be2f-cfbb88df923f",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 492.34034859650467,
+            "y": 433.97948947732709
+          },
+          "nodeIndex": "fact_aggregated_bookings",
+          "nodeLineageTag": "01a0264d-0edb-41f1-806c-192b077ae762",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 473.5104894831826,
+            "y": 0
+          },
+          "nodeIndex": "fact_bookings",
+          "nodeLineageTag": "a460a9db-7c86-4530-ad5c-b271969bea0d",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 1135.0391171053636,
+            "y": 264.98974473866355
+          },
+          "nodeIndex": "key_measures",
+          "nodeLineageTag": "a42eee40-2bfa-4b37-810f-30fe5643e52d",
+          "size": {
+            "height": 104,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 61.269113739309233,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

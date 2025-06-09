@@ -1,0 +1,36 @@
+table dim_rooms
+	lineageTag: 9dd2597b-1346-4c5b-be2f-cfbb88df923f
+
+	column room_id
+		dataType: string
+		lineageTag: 5717361e-c9ef-4823-9425-0092c7668937
+		summarizeBy: none
+		sourceColumn: room_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column room_class
+		dataType: string
+		lineageTag: e1c90e45-ebd4-40d1-b914-862a44084d3a
+		summarizeBy: none
+		sourceColumn: room_class
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_rooms = m
+		mode: import
+		source =
+				let
+				    Source = Folder.Files("C:\Users\Jimmy\Desktop\Hospitality"),
+				    #"C:\Users\Jimmy\Desktop\Hospitality\_dim_rooms csv" = Source{[#"Folder Path"="C:\Users\Jimmy\Desktop\Hospitality\",Name="dim_rooms.csv"]}[Content],
+				    #"Imported CSV" = Csv.Document(#"C:\Users\Jimmy\Desktop\Hospitality\_dim_rooms csv",[Delimiter=",", Columns=2, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Imported CSV",{{"Column1", type text}, {"Column2", type text}}),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"room_id", type text}, {"room_class", type text}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

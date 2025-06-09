@@ -1,0 +1,65 @@
+table fact_aggregated_bookings
+	lineageTag: 01a0264d-0edb-41f1-806c-192b077ae762
+
+	column property_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 8b1074de-cefa-439e-9d6c-131ee3871b42
+		summarizeBy: none
+		sourceColumn: property_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column check_in_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0c1d88ff-5a46-4700-ba54-6c7da6e188d3
+		summarizeBy: none
+		sourceColumn: check_in_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column room_category
+		dataType: string
+		lineageTag: 527d399f-d14f-489a-9e9f-a8bf49df6204
+		summarizeBy: none
+		sourceColumn: room_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column successful_bookings
+		dataType: int64
+		formatString: 0
+		lineageTag: 99111d07-1baf-4321-bd91-0313b481b128
+		summarizeBy: sum
+		sourceColumn: successful_bookings
+
+		annotation SummarizationSetBy = Automatic
+
+	column capacity
+		dataType: int64
+		formatString: 0
+		lineageTag: afdf916c-626d-4749-a8e7-de2a6a958aa2
+		summarizeBy: sum
+		sourceColumn: capacity
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_aggregated_bookings = m
+		mode: import
+		source =
+				let
+				    Source = Folder.Files("C:\Users\Jimmy\Desktop\Hospitality"),
+				    #"C:\Users\Jimmy\Desktop\Hospitality\_fact_aggregated_bookings csv" = Source{[#"Folder Path"="C:\Users\Jimmy\Desktop\Hospitality\",Name="fact_aggregated_bookings.csv"]}[Content],
+				    #"Imported CSV" = Csv.Document(#"C:\Users\Jimmy\Desktop\Hospitality\_fact_aggregated_bookings csv",[Delimiter=",", Columns=5, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"property_id", Int64.Type}, {"check_in_date", type date}, {"room_category", type text}, {"successful_bookings", Int64.Type}, {"capacity", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
